@@ -1,6 +1,7 @@
 #! /usr/bin/python
-print ("programa que suma 2 numeros")
-#a = input("Ingrese el sumando 1: ")
-#b = input("Ingrese el sumando 2: ")
-#suma = a + b
-#print "El resultado de la suma es:", suma
+print ("Programa que lee archivo de texto\n")
+fo = open("/carpetaDocker/mensaje.txt", "r+")
+str = fo.read(10);
+print "La informacion es : ", str
+fo.close()
+
