@@ -12,6 +12,7 @@ def trustedHost(host):
 		for line in reader:
 			if line.strip("\n") == host:
 				valor = True
+		reader.close()
 		return valor
 
 def isFin(message):
@@ -21,7 +22,17 @@ def isFin(message):
 		if (i == "fin"):
 			valor = True
 	return valor
-	
+
+def concatMessage(message):
+	if(isFin(message)):
+		end = open("/carpetaDocker/mensaje.txt", "w")
+		end.write(message)
+		end.close()
+	else:
+		new = open("/carpetaDocker/mensaje.txt", "r+")
+		message = message + " " + new.readline()
+		new.close()
+		print message	
 	
 print trustedHost("365.254.21.4")
-print isFin("Son Dos Tres fin")
+concatMessage("Son Dos Tres Cuatro Cinco fin")
