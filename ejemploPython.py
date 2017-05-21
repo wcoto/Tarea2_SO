@@ -5,6 +5,7 @@ str = fo.read(25);
 print "La informacion es : ", str
 fo.close()
 
+
 def trustedHost(host):
 	with open("/carpetaDocker/Configuracion.config", "r+") as reader:
 		valor = False;
@@ -12,5 +13,15 @@ def trustedHost(host):
 			if line.strip("\n") == host:
 				valor = True
 		return valor
+
+def isFin(message):
+	results = message.split()
+	valor = False
+	for i in results:
+		if (i == "fin"):
+			valor = True
+	return valor
+	
 	
 print trustedHost("365.254.21.4")
+print isFin("Son Dos Tres fin")
