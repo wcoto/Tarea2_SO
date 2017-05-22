@@ -14,7 +14,7 @@ ADD . /app
 EXPOSE 80
 
 # Define environment variable
-ENV NAME World
+ENV portServer 9999
 
 # Run app.py when the container launches
 CMD ["python", "ejemploPython.py"]
