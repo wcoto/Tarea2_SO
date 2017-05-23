@@ -32,7 +32,8 @@ def server():
             key = generateKey()
             #message = decryptar(key, data)
             message = concatMessage(data.decode("utf-8"))
-            print ("Mensaje: ", message)
+            print ("Mensaje para enviar: ", message)
+            clientSend(message)
             data = encryptar(key, message)
             print ("Encriptado: ", data)
             #if (message != "fin"):
@@ -47,7 +48,12 @@ def server():
             conn.close()
     server.close()
 
-# "localhost", 9999
+def clientSend(data):
+    client = socket.socket()
+    client.connect(("192.168.100.6", 7777))
+    client.send(data.encode("utf-8"))
+    client.close()
+
 def createServer_Client(portServer, ipServer):
     server = socket.socket()
     #client = socket.socket()
@@ -93,7 +99,7 @@ def concatMessage(message):
         return "fin"
     else:
         new = open("/carpetaDocker/mensaje.txt", "r+")
-        message = message + " " + new.readline() + " "
+        message = message + " " + new.readline().strip("\n") + " "
         new.close()
         return message
 
