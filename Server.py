@@ -6,7 +6,6 @@ s.listen(1)
 
 sc, addr = s.accept()
 
-print sc.getpeername()[0]
 
 while True:
       recibido = sc.recv(1024)

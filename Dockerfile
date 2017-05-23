@@ -23,11 +23,11 @@ ADD . /app
 # Install any needed packages specified in requirements.txt
 #RUN pip install -r requirements.txt
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Make port 80 available to the world outside this container   -p mipuerto:alquelovoyamapear
+EXPOSE 15951
 
 # Define environment variable
 ENV portServer 9999
 
 # Run app.py when the container launches
-CMD ["python3.6", "ejemploPython.py"]
+CMD ["python3.6", "-u", "ejemploPython.py"]

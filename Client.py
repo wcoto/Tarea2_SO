@@ -1,7 +1,7 @@
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("localhost", 9992))
+s.connect(("localhost", 15951))
 
 while True:
       mensaje = raw_input("> ")

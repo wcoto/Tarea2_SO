@@ -6,7 +6,31 @@ from Cryptodome.Cipher import PKCS1_OAEP
 from Cryptodome.Random import get_random_bytes
 
 import socket
-import os
+import sys
+
+HOST = ''
+PORT = 15951
+
+
+def server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        server.bind((HOST, PORT))
+    except (socket.error):
+        print ("Fallo en el enlace...")
+        sys.exit()
+
+    server.listen(10)
+    print("Servidor esperando clientes...")
+
+    while 1:
+        conn, addr = server.accept()
+        print ("Conectado con: " + addr[0] + ":" + str(addr[1]))
+        data = conn.recv(1024)
+        print(data)
+        conn.close
+
+    server.close
 
 # "localhost", 9999
 def createServer_Client(portServer, ipServer):
@@ -66,7 +90,7 @@ def encryptar(message):
     decrypted = cipher_rsa.decrypt(encrypted)
     print ('\nDecrypted message', decrypted)
 
-encryptar()
+server()
 
 	
 #print trustedHost("365.254.21.4")
