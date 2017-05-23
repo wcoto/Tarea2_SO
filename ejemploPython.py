@@ -21,14 +21,26 @@ def server():
         sys.exit()
 
     server.listen(10)
-    print("Servidor esperando clientes...")
+    print("\n\nServidor esperando clientes...")
 
     while True:
         conn, addr = server.accept()
         if(trustedHost(addr[0]) == True):
             print ("Conectado con: " + addr[0] + ":" + str(addr[1]))
             data = conn.recv(1024)
-            print(data)
+            print ("Cliente dice: ", data)
+            key = generateKey()
+            #message = decryptar(key, data)
+            message = concatMessage(data.decode("utf-8"))
+            print ("Mensaje: ", message)
+            data = encryptar(key, message)
+            print ("Encriptado: ", data)
+            #if (message != "fin"):
+                #data = encryptar(key, message)
+                #client = socket.socket()
+                #client.connect((ipClient, portClient))
+                #client.send("Encriptado_Enviar")
+                #client.close()
             conn.close()
         else:
             conn.send("Su conexion no es permitida en este sistema".encode())
@@ -78,23 +90,41 @@ def concatMessage(message):
         end = open("/carpetaDocker/mensaje.txt", "w")
         end.write(message)
         end.close()
+        return "fin"
     else:
         new = open("/carpetaDocker/mensaje.txt", "r+")
         message = message + " " + new.readline() + " "
         new.close()
-        print (message)	
+        return message
 
-def encryptar(message):
-    publickey = RSA.generate(1024)
-    print ("Public: ", publickey.exportKey())
-    cipher_rsa = PKCS1_OAEP.new(publickey)
-    encrypted = cipher_rsa.encrypt(message.encode('utf-8'))
-    print ('\nEncrypted message: ', encrypted)
-    decrypted = cipher_rsa.decrypt(encrypted)
-    print ('\nDecrypted message', decrypted)
+def generateKey():
+    publicKey = RSA.generate(1024)
+    cipher_rsa = PKCS1_OAEP.new(publicKey)
+    return cipher_rsa
+
+def decryptar(key, encrypted):
+    return key.decrypt(encrypted)
+
+def encryptar(key, message):
+    return key.encrypt(message.encode('utf-8'))
+
+#def encryptar(message):
+    #publickey = RSA.generate(1024)
+    #print ("Public: ", publickey.exportKey())
+    #cipher_rsa = PKCS1_OAEP.new(publickey)
+    #encrypted = cipher_rsa.encrypt(message.encode('utf-8'))
+    #print ('\nEncrypted message: ', encrypted)
+    #decrypted = cipher_rsa.decrypt(encrypted)
+    #print ('\nDecrypted message', decrypted)
+
+def myIP():
+    desktop_Name = socket.gethostname()
+    direction_IP = socket.gethostbyname(desktop_Name)
+    return direction_IP
 
 server()
-#encryptar("negarlo")
+
+#myIP()
 	
 #print trustedHost("365.254.21.4")
 #concatMessage("Uno Dos Tres Cuatro Cinco fin")
