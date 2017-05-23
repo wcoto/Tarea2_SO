@@ -23,14 +23,17 @@ def server():
     server.listen(10)
     print("Servidor esperando clientes...")
 
-    while 1:
+    while True:
         conn, addr = server.accept()
-        print ("Conectado con: " + addr[0] + ":" + str(addr[1]))
-        data = conn.recv(1024)
-        print(data)
-        conn.close
-
-    server.close
+        if(trustedHost(addr[0]) == True):
+            print ("Conectado con: " + addr[0] + ":" + str(addr[1]))
+            data = conn.recv(1024)
+            print(data)
+            conn.close()
+        else:
+            conn.send("Su conexion no es permitida en este sistema".encode())
+            conn.close()
+    server.close()
 
 # "localhost", 9999
 def createServer_Client(portServer, ipServer):
@@ -71,15 +74,15 @@ def isFin(message):
 	return valor
 
 def concatMessage(message):
-	if(isFin(message)):
-		end = open("/carpetaDocker/mensaje.txt", "w")
-		end.write(message)
-		end.close()
-	else:
-		new = open("/carpetaDocker/mensaje.txt", "r+")
-		message = message + " " + new.readline() + " "
-		new.close()
-		print (message)	
+    if(isFin(message)):
+        end = open("/carpetaDocker/mensaje.txt", "w")
+        end.write(message)
+        end.close()
+    else:
+        new = open("/carpetaDocker/mensaje.txt", "r+")
+        message = message + " " + new.readline() + " "
+        new.close()
+        print (message)	
 
 def encryptar(message):
     publickey = RSA.generate(1024)
@@ -91,11 +94,14 @@ def encryptar(message):
     print ('\nDecrypted message', decrypted)
 
 server()
-
+#encryptar("negarlo")
 	
 #print trustedHost("365.254.21.4")
 #concatMessage("Uno Dos Tres Cuatro Cinco fin")
 
 
 # docker build -t face .
-# docker run -v /home/wagcm/Escritorio/Tarea2_SO/carpetaDocker:/carpetaDocker face
+# docker run -p 15951:15951 -v /home/wagcm/Escritorio/Tarea2_SO/carpetaDocker:/carpetaDocker face
+
+
+#b'\x07\xfb\xf8\xf3\x13|w\xbb\xf9n\xda\xba\xb6\x81\xea\x15\t\x86M\x16W\xac\xb8\x9dL@\x12\xf2\xbd*h%c \xd7!\x04y\x1d\x99\xf1\t\x13b\x17`}&\xfa\rx\xd7aLf9\xa6K\xffx\x91\x16d\xc1\xcd\xba\x82c\xa2\xe9\xf1m\xbf\\_\x1e\xe4s\x8c\xd4\x1cW\x8d\x02\x0cX\x00\xe9\x94\xd5\xa7\x88\x8f\x85\x8c\xea\x82\xe6W\x03\x8c*\xf8\x7fi/\xd7)H\xae\x92\xe7\xbb\xad\x0b8\xde\xb7\xb5D\x06m\xd6\x98Y\x97\xe2\xb4'
