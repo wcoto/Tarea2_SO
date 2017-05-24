@@ -16,6 +16,7 @@ CONFIG = "/carpetaDocker/Configuracion.config"
 MESSAGE = "/carpetaDocker/mensaje.txt"
 PUBLIC_KEY = "/carpetaDocker/PublicKey.txt"
 IP = "/carpetaDocker/ip.txt"
+CONDITIONAL = "fin"
 
 
 def server():
@@ -73,7 +74,7 @@ def isFin(message):
     results = message.split(" ")
     valor = False
     for i in results:
-        if (i == "fin"):
+        if (i == CONDITIONAL):
             valor = True
     return valor
 
