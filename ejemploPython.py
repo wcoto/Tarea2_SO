@@ -7,6 +7,7 @@ from Cryptodome.Random import get_random_bytes
 
 import socket
 import sys
+import os
 
 HOST = ''
 PORT = 15951
@@ -26,70 +27,54 @@ def server():
     while True:
         conn, addr = server.accept()
         if(trustedHost(addr[0]) == True):
-            print ("Conectado con: " + addr[0] + ":" + str(addr[1]))
+            print ("\nConectado con: " + addr[0] + ":" + str(addr[1]))
             data = conn.recv(1024)
             print ("Cliente dice: ", data)
-            key = generateKey()
+            #key = generateKey()
+            print ("LlavePublica: ", os.environ.get("PublicKey"))
             #message = decryptar(key, data)
-            message = concatMessage(data.decode("utf-8"))
-            print ("Mensaje para enviar: ", message)
-            clientSend(message)
-            data = encryptar(key, message)
-            print ("Encriptado: ", data)
-            #if (message != "fin"):
+            #message = concatMessage(data.decode("utf-8"))
+            #if (message != "ready"):
                 #data = encryptar(key, message)
-                #client = socket.socket()
-                #client.connect((ipClient, portClient))
-                #client.send("Encriptado_Enviar")
-                #client.close()
-            conn.close()
+                #clientSend(data)
+            #conn.close()
         else:
-            conn.send("Su conexion no es permitida en este sistema".encode())
+            conn.send("\nSu conexion no es permitida en este sistema\n".encode())
             conn.close()
     server.close()
 
 def clientSend(data):
+    indexNextServer = ipIndex() + 1
+    ipList = createIPList()
     client = socket.socket()
-    client.connect(("192.168.100.6", 7777))
+    client.connect((ipList[indexNextServer], 7777))
     client.send(data.encode("utf-8"))
     client.close()
 
-def createServer_Client(portServer, ipServer):
-    server = socket.socket()
-    #client = socket.socket()
+def ipIndex():
+    ipList = createIPList()
+    return ipList.index(myIP())
 
-    server.bind((ipServer, portServer))
-    server.listen(1)
-    sc, addr = server.accept()
+def createIPList():
+    ipList = []
+    with open("/carpetaDocker/Configuracion.config", "r+") as reader:
+        for line in reader:
+            ipList.append(line.strip("\n"))
+    reader.close()
+    return ipList
 
-    #client.connect((ipClient, portClient))
-    while True:
-        received = sc.recv(1024)
-        if received == "quit":
-            break
-        print ("Recibido_Encriptado: ", received)
-        #client.send("Encriptado_Enviar")
-
-    sc.close()
-    server.close()
-    #client.close()
 
 def trustedHost(host):
-    with open("/carpetaDocker/Configuracion.config", "r+") as reader:
-        valor = False
-        for line in reader:
-            if line.strip("\n") == host:
-                valor = True
-    reader.close()
-    return valor
+    ipList = createIPList()
+    return host in ipList
 
 def isFin(message):
-	results = message.split()
-	valor = False
-	for i in results:
-		if (i == "fin"):
-			valor = True
-	return valor
+    results = message.split()
+    valor = False
+    for i in results:
+        if (i == "ready"):
+            valor = True
+    return valor
 
 def concatMessage(message):
     if(isFin(message)):
@@ -105,6 +90,7 @@ def concatMessage(message):
 
 def generateKey():
     publicKey = RSA.generate(1024)
+    print ("Public: ", publicKey.exportKey().decode("utf-8"))
     cipher_rsa = PKCS1_OAEP.new(publicKey)
     return cipher_rsa
 
@@ -114,23 +100,13 @@ def decryptar(key, encrypted):
 def encryptar(key, message):
     return key.encrypt(message.encode('utf-8'))
 
-#def encryptar(message):
-    #publickey = RSA.generate(1024)
-    #print ("Public: ", publickey.exportKey())
-    #cipher_rsa = PKCS1_OAEP.new(publickey)
-    #encrypted = cipher_rsa.encrypt(message.encode('utf-8'))
-    #print ('\nEncrypted message: ', encrypted)
-    #decrypted = cipher_rsa.decrypt(encrypted)
-    #print ('\nDecrypted message', decrypted)
-
 def myIP():
-    desktop_Name = socket.gethostname()
-    direction_IP = socket.gethostbyname(desktop_Name)
-    return direction_IP
+    new = open("/carpetaDocker/ip.txt", "r+")
+    ip = new.readline().strip("\n")
+    new.close()
+    return ip
 
 server()
-
-#myIP()
 	
 #print trustedHost("365.254.21.4")
 #concatMessage("Uno Dos Tres Cuatro Cinco fin")

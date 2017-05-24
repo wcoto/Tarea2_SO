@@ -32,3 +32,15 @@ s.close()
     #print ('\nEncrypted message: ', encrypted)
     #decrypted = cipher_rsa.decrypt(encrypted)
     #print ('\nDecrypted message', decrypted)
+
+
+# telnet 192.168.100.10 15951
+
+
+            print ("Mensaje para enviar: ", message)
+            clientSend(message)
+
+
+
+                        data = encryptar(key, message)
+            print ("Encriptado: ", data)
