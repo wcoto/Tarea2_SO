@@ -7,11 +7,12 @@ RUN yum -y update
 RUN yum -y install yum-utils
 # The Development tools will allow you to build and compile software from source code
 RUN yum -y groupinstall development
-# 
 RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+# Download python36u linux packages for CentOS
 RUN yum -y install python36u
 RUN yum -y install python36u-pip
 RUN yum -y install gcc gmp python3-devel
+# PyCryptodome is a self-contained Python package of low-level cryptographic primitives
 RUN pip3.6 install pycryptodomex
 
 # Set the working directory to /app
