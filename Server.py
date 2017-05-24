@@ -23,6 +23,16 @@ s.close()
 # https://stackoverflow.com/questions/35384437/socket-connection-over-internet-in-python
 
 
+message = 'To be encrypted'
+>>> key = RSA.importKey(open('pubkey.der').read())
+>>> cipher = PKCS1_OAEP.new(key)
+>>> ciphertext = cipher.encrypt(message)
+
+
+>>> key = RSA.importKey(open('privkey.der').read())
+>>> cipher = PKCS1_OAP.new(key)
+>>> message = cipher.decrypt(ciphertext)
+
 
 #def encryptar(message):
     #publickey = RSA.generate(1024)
